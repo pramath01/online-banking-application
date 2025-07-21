@@ -57,7 +57,7 @@
                                     <tr>
                                         <th scope="row">${loop.index + 1}</th>
                                         <td>${trans.description}</td>
-                                       <c:set var="account_number" scope="session" value="${checkingAccount.account_number}"/>
+                                       <c:set var="account_number" scope="session" value="${savingsAccount.account_number}"/>
                                         <c:set var="description" scope="session" value="${trans.description}"/>                                     
                                         <c:set var="payee_id" scope="session" value="${trans.payee_id}"/>
                                         <c:set var="payer_id" scope="session" value="${trans.payer_id}"/>
