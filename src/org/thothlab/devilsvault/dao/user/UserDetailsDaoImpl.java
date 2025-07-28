@@ -24,7 +24,7 @@ public class UserDetailsDaoImpl extends JdbcDaoSupport implements UserDetailsDao
 	private static final String SQL_USERS_COUNT = "SELECT count(*) FROM users WHERE username = ?";
 
 	private static final String SQL_USER_ATTEMPTS_GET = "SELECT * FROM user_attempts WHERE username = ?";
-	private static final String SQL_USER_ATTEMPTS_INSERT = "INSERT INTO user_attempts (USERNAME, ATTEMPTS, LASTMODIFIED) VALUES(?,?,?)";
+	private static final String SQL_USER_ATTEMPTS_INSERT = "INSERT INTO user_attempts (username, attempts, lastmodified) VALUES(?,?,?)";
 
 	private static final String SQL_USER_ATTEMPTS_UPDATE_ATTEMPTS = "UPDATE user_attempts SET attempts = attempts + 1, lastmodified = ? WHERE username = ?";
 	private static final String SQL_USER_ATTEMPTS_RESET_ATTEMPTS = "UPDATE user_attempts SET attempts = 0, lastmodified = now() WHERE username = ?";
