@@ -181,7 +181,7 @@ public class Registration {
                 else
                 {
                     isValidated = false;
-                    redir.addFlashAttribute("error_message","Please enter correct 10 digit phone number only numbers accepted");
+                    redir.addFlashAttribute("error_message","Please enter correct 10 digit phone number only numbers accepted and should of the format xxxxxxxxxx ");
                 }
             }
             else
@@ -211,7 +211,7 @@ public class Registration {
         		Integer userId = externaluserDao.createUser(externaluser);
         		Integer creditAccNo = bankaccountDao.CreateAndGetCreditAccountNo(userId);
         		creditcardDao.createCreditAccount(creditAccNo); 
-        		userauthenticationdaoimpl.sendEmailToUser(newuser.getEmail(), passwords.get("rawPassword"));
+        		//userauthenticationdaoimpl.sendEmailToUser(newuser.getEmail(), passwords.get("rawPassword"));
         		LogDaoImpl logDao = ctx.getBean("DatabaseLogDao", LogDaoImpl.class);
                 DatabaseLog dblog = new DatabaseLog();
 
@@ -239,6 +239,7 @@ public class Registration {
 	    ctx.close();
 	    return model;
 		}catch (Exception e){
+            e.printStackTrace();
 			throw new ExceptionHandlerClass(); 
 		}
     }

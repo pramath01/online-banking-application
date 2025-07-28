@@ -229,7 +229,7 @@ public class UserAuthenticationDaoImpl implements UserAuthenticationDao {
 				message.setText("Your Username: " + email + "\n\nPassword : " + pass
 						+ "\n\nPlease do not share this password with anyone");
 			}
-			Transport.send(message);
+			//Transport.send(message);
 
 		} catch (MessagingException e) {
 			throw new RuntimeException(e);

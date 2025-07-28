@@ -8,6 +8,10 @@ import java.sql.SQLException;
 
 import javax.sql.DataSource;
 
+import java.sql.Statement;
+import org.springframework.jdbc.support.GeneratedKeyHolder;
+import org.springframework.jdbc.support.KeyHolder;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Repository;
@@ -124,44 +128,40 @@ public class ExtUserDaoImpl{
         userDetails.setSsn(ssn);
         return userDetails;
     }
-	
-	public Integer createUser(Customer userdetails)
-    {
-        String query = "INSERT INTO external_users ( id , name , address ,city,state,country,pincode, phone , email , date_of_birth , ssn ) VALUES (?,?,?,?,?,?,?,?,?,?,?)";
-        Connection con = null;
-        PreparedStatement ps = null;
-        try{
-            con = dataSource.getConnection();
-            ps = con.prepareStatement(query);
-            ps.setInt(1, userdetails.getId());
-            ps.setString(2, userdetails.getName());
-            ps.setString(3, userdetails.getAddress());
-            ps.setString(4, "sdsdsad");
-            ps.setString(5, "sdsdsad");
-            ps.setString(6, "sdsdsad");
-            ps.setInt(7, 123);
-            ps.setLong(8, userdetails.getPhone().longValue());
-            ps.setString(9, userdetails.getEmail());
-            ps.setString(10, userdetails.getDate_of_birth());
-            ps.setString(11, userdetails.getSsn());
-            int out = ps.executeUpdate();
-            if(out !=0){
-                 String queryID = "SELECT id from external_users where email= '" + userdetails.getEmail() + "'"; 
-                    Integer id = jdbcTemplate.queryForList(queryID, Integer.class).get(0);
-                    return id;
-            }else return 0;
-        }catch(SQLException e){
-            e.printStackTrace();
-        }finally{
-            try {
-                ps.close();
-                con.close();
-            } catch (SQLException e) {
-                e.printStackTrace();
-            }
-        }
-        return 0;
-    }
+
+	public Integer createUser(Customer userdetails) {
+		// Corrected query: We do NOT provide a value for the auto-incrementing 'id' column.
+		// The hardcoded city/state/country/pincode values are kept as they were in your original code.
+		String query = "INSERT INTO external_users (name, address, city, state, country, pincode, phone, email, date_of_birth, ssn) " +
+				"VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
+
+		// KeyHolder is a Spring utility that will hold the auto-generated key (the ID)
+		KeyHolder keyHolder = new GeneratedKeyHolder();
+
+		jdbcTemplate.update(connection -> {
+			PreparedStatement ps = connection.prepareStatement(query, Statement.RETURN_GENERATED_KEYS);
+			ps.setString(1, userdetails.getName());
+			ps.setString(2, userdetails.getAddress());
+			ps.setString(3, "sdsdsad"); // Hardcoded value from your original code
+			ps.setString(4, "sdsdsad"); // Hardcoded value from your original code
+			ps.setString(5, "sdsdsad"); // Hardcoded value from your original code
+			ps.setInt(6, 123);           // Hardcoded value from your original code
+			// Assuming phone is BigInteger, convert to long for the database
+			ps.setLong(7, userdetails.getPhone().longValue());
+			ps.setString(8, userdetails.getEmail());
+			ps.setString(9, userdetails.getDate_of_birth());
+			ps.setString(10, userdetails.getSsn());
+			return ps;
+		}, keyHolder);
+
+		// After the update, the keyHolder contains the new ID. We retrieve and return it.
+		if (keyHolder.getKey() != null) {
+			return keyHolder.getKey().intValue();
+		} else {
+			// This is a robust way to handle an unexpected failure.
+			throw new RuntimeException("Failed to retrieve auto-generated key for new external user: " + userdetails.getEmail());
+		}
+	}
 	
 	public BankAccountDB getCreditCardBalance(BankAccountDB account)
 	{
