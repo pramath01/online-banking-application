@@ -72,6 +72,7 @@ public class CreditCardDashboardController {
 			return model;
 		}
 		catch (Exception e){
+			e.printStackTrace();
 			throw new ExceptionHandlerClass(); 
 		}
 	}
@@ -116,19 +117,32 @@ public class CreditCardDashboardController {
 		
 
 	}
-	
+
+// In CreditCardDashboardController.java
+
 	private CreditAccount getCreditInfoForUser(int userId) {
-		try{
+		try {
 			CreditCardDOA doa = CustomerDAOHelper.creditCardDAO();
 			CustomerDAO cust_dao = CustomerDAOHelper.customerDAO();
 			Customer cust = cust_dao.getCustomer(userId);
-			
+
+			// This can now be null
 			CreditAccount account = doa.getCreditAccount(cust);
+
+			// === THIS IS THE NEW PART ===
+			if (account == null) {
+				// If the DOA returns null, we can create a new, empty account object
+				// or handle it in another way to prevent a NullPointerException later.
+				// For now, let's just return null so the calling method knows nothing was found.
+				return null;
+			}
+
 			return account;
-		}catch (Exception e){
-			throw new ExceptionHandlerClass(); 
+		} catch (Exception e) {
+			// It's much better to log the real error than to swallow it
+			e.printStackTrace();
+			throw new ExceptionHandlerClass();
 		}
-		
 	}
 	
 	private int getMonthFromString(String monthStr) {

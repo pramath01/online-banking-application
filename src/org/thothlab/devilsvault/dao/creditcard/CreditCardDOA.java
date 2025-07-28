@@ -33,17 +33,26 @@ public class CreditCardDOA {
 	 * @param customer
 	 * @return
 	 */
-		public CreditAccount getCreditAccount(Customer customer) {
-		String query = "select cc.id id, cc.credit_card_no credit_card_no, cc.available_balance available_balance,"
-				+ " cc.last_bill_amount last_bill_amount, cc.due_date due_date, cc.apr apr,cc.account_number account_number, "
-				+ "cc.cycle_date cycle_date, cc.current_due_amt current_due_amt, cc.credit_limit credit_limit "
-				+ "from credit_card_account_details cc INNER JOIN bank_accounts bk where bk.account_number = cc.account_number  "
-				+ "AND bk.external_users_id= "+customer.getId() +" AND bk.account_type='CREDIT' ";//
-		
-		
-		List<CreditAccount> creditcard_details= jdbcTemplate.query(query,new CreditCardAccMapper());
-		return creditcard_details.get(0);
-		/*return null;*/
+	public CreditAccount getCreditAccount(Customer customer) {
+		// Note: I have made the query safer by using a placeholder '?'
+		// NEW, CORRECTED QUERY
+		String query = "select cc.credit_card_no, cc.available_balance, cc.last_bill_amount, cc.due_date, cc.apr, "
+				+ "cc.account_number, cc.cycle_date, cc.current_due_amt, cc.credit_limit "
+				+ "from credit_card_account_details cc INNER JOIN bank_accounts bk on bk.account_number = cc.account_number "
+				+ "WHERE bk.external_users_id = ? AND bk.account_type = 'CREDIT'";
+
+		// Execute the query with the customer's ID as a parameter
+		List<CreditAccount> creditcard_details = jdbcTemplate.query(query, new Object[]{customer.getId()}, new CreditCardAccMapper());
+
+		// === THIS IS THE FIX ===
+		// Check if the list is empty.
+		if (creditcard_details.isEmpty()) {
+			// If no credit card was found, return null to gracefully handle the situation.
+			return null;
+		} else {
+			// If a credit card was found, return the first (and only) one.
+			return creditcard_details.get(0);
+		}
 	}
 	
 		/**
