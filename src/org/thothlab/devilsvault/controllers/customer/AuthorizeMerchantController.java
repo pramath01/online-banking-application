@@ -88,7 +88,7 @@ public class AuthorizeMerchantController {
 
 
              //System.out.println(merchantID);
-             result =  transferDAO.addMerchantToUser(merchantID,userID);
+             result =  transferDAO.addMerchantToUser(userID,merchantID);
 
              //System.out.println("result"+result);
          }

@@ -318,21 +318,32 @@ public class TransferDAO {
 		}
 		return merchantAccounts;
 	}
-	
-	public boolean addMerchantToUser(int merchantID, int userID) throws SQLException {
 
-		String query = "insert into authorized_merchants_users values(" + merchantID + "," + userID + ")";
-		System.out.println(query);
-		Connection con = dataSource.getConnection();
-		Statement st = con.createStatement();
-		int i = st.executeUpdate(query);
-		if (i == 1) {
-			return true;
+	// In your DAO class (e.g., TransferDAO.java)
+
+	public boolean addMerchantToUser(int userID, int merchantID) throws SQLException {
+
+		// The correct SQL query with column names and parameter placeholders (?)
+		String query = "INSERT INTO authorized_merchants_users (external_user_id, merchant_id) VALUES (?, ?)";
+
+		// Use a PreparedStatement to prevent SQL Injection
+		try (Connection con = dataSource.getConnection();
+			 PreparedStatement ps = con.prepareStatement(query)) {
+
+			// Set the parameters in the correct order
+			ps.setInt(1, userID);     // First '?' is the customer's ID
+			ps.setInt(2, merchantID); // Second '?' is the merchant's ID
+
+			// Execute the update
+			int rowsAffected = ps.executeUpdate();
+
+			// executeUpdate() returns the number of rows inserted.
+			// If it's 1, the insert was successful.
+			return rowsAffected == 1;
 		}
-		System.out.println(i);
-		return false;
+		// The try-with-resources block will automatically close the connection and statement.
 	}
-	
+
 	public boolean deleteMerchantConnection(int userID, int merchantID) throws SQLException {
 
 
