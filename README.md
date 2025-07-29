@@ -79,9 +79,22 @@ Follow these steps carefully to get the application running locally.
      *   In the "Command line" field, type **`clean install`**.
      *   Click **OK**.
    *   You can now run the application by clicking the "Run" button.
+![screenshot](images/Screenshot%202025-07-29%20184804.png)
 
 
 
-## login credentials 
-### username :  manager@bank.com
-### password : adminpass 
+## Login Credentials
+
+*   **Username:** `manager@bank.com`
+*   **Password:** `adminpass`
+
+*   The above username and password are inserted directly using the database scripts. The password is stored as a BCrypt hash.
+*   After successfully registering a new user, the password will be displayed in the server log/console, since the email/SMTP service is commented out. You can use those credentials to log in as a customer or merchant.
+*   **Note:** Admin login (`admin@bank.com`) is not yet tested properly.
+
+![screenshot](images/Screenshot%202025-07-29%20185542.png)
+![screenshot](images/Screenshot%202025-07-29%20184950.png)
+
+
+
+
